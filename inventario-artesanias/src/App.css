@@ -1,0 +1,79 @@
+.app {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: fadeIn 0.5s ease-in;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 80vh; /* asegurar que top-section tenga espacio */
+}
+
+.top-section {
+  display: flex;
+  gap: 20px;
+  align-items: stretch; /* fuerza a que los hijos ocupen la misma altura */
+}
+
+/* Lista de inventario */
+.inventory-container {
+  flex: 3;
+  max-height: 100%; /* ocupar toda la altura disponible */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Indicadores verticales */
+.summary-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: flex-start;
+}
+
+/* Formulario debajo */
+.bottom-section {
+  margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .top-section {
+    flex-direction: column;
+  }
+
+  .summary-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-section {
+    flex-direction: column;
+  }
+
+  .inventory-container {
+    max-height: none;
+  }
+
+  .summary-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

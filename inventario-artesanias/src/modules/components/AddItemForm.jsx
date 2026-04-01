@@ -1,58 +1,61 @@
 import { useState } from 'react'
-import './AddProdForm.css'
+import './AddItemForm.css'
 
-function AddProdForm({ addProd }) {
-  const [prodData, setProdData] = useState({
+function AddItemForm({ addItem }) {
+  const [formData, setFormData] = useState({
     nombre: '',
     categoria: '',
     cantidad: '',
-    unidad: 'unidades',
     precio: ''
   })
 
-  const categorias = ['Artesanias y recuerdos', 'Gastronomia', 'Bebidas', 'Textiles tradicionales', 'Experiencias turisticas']
+  const categorias = [
+    'Souvenirs artesanales',
+    'Textiles tradicionales',
+    'Cerámica',
+    'Joyería artesanal',
+  ]
 
   const handleChange = (e) => {
-    setProdData({
-      ...prodData,
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value
     })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
-    if (!prodData.nombre || !prodData.categoria || !prodData.cantidad) {
-      alert('Por favor completa los campos requeridos')
+
+    if (!formData.nombre || !formData.categoria || !formData.cantidad || !formData.precio) {
+      alert('Por favor completa todos los campos requeridos')
       return
     }
 
-    addProd({
-      ...prodData,
-      cantidad: parseInt(prodData.cantidad),
-      precio: parseFloat(prodData.precio) || 0
+    addItem({
+      ...formData,
+      cantidad: parseInt(formData.cantidad),
+      precio: parseFloat(formData.precio),
+      unidad: 'unidades'
     })
 
-    setProdData({
+    setFormData({
       nombre: '',
       categoria: '',
       cantidad: '',
-      unidad: 'unidades',
       precio: ''
     })
   }
 
   return (
-    <div className="add-prod-form">
+    <div className="add-item-form">
       <h2>Agregar Nuevo Producto</h2>
       <form onSubmit={handleSubmit}>
-
         <div className="form-group">
           <label>Nombre del producto *</label>
           <input
             type="text"
             name="nombre"
-            value={prodData.nombre}
+            value={formData.nombre}
             onChange={handleChange}
             placeholder="Ej: Poncho"
             required
@@ -63,7 +66,7 @@ function AddProdForm({ addProd }) {
           <label>Categoría *</label>
           <select
             name="categoria"
-            value={prodData.categoria}
+            value={formData.categoria}
             onChange={handleChange}
             required
           >
@@ -74,31 +77,16 @@ function AddProdForm({ addProd }) {
           </select>
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label>Cantidad *</label>
-            <input
-              type="number"
-              name="cantidad"
-              value={prodData.cantidad}
-              onChange={handleChange}
-              min="0"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Unidad</label>
-            <select
-              name="unidad"
-              value={prodData.unidad}
-              onChange={handleChange}
-            >
-              <option value="unidades">Unidades</option>
-              <option value="tazas">tazas</option>
-              <option value="cupos">cupos</option>
-            </select>
-          </div>
+        <div className="form-group">
+          <label>Cantidad *</label>
+          <input
+            type="number"
+            name="cantidad"
+            value={formData.cantidad}
+            onChange={handleChange}
+            min="0"
+            required
+          />
         </div>
 
         <div className="form-group">
@@ -106,7 +94,7 @@ function AddProdForm({ addProd }) {
           <input
             type="number"
             name="precio"
-            value={prodData.precio}
+            value={formData.precio}
             onChange={handleChange}
             placeholder="0.00"
             step="0.01"
@@ -118,10 +106,9 @@ function AddProdForm({ addProd }) {
         <button type="submit" className="btn-submit">
           Agregar Producto
         </button>
-
       </form>
     </div>
   )
 }
 
-export default AddProdForm
+export default AddItemForm
