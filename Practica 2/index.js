@@ -12,10 +12,7 @@ app.use(express.json()); // Lectura y parseo del body
 //#1
 app.post('/categorias', async (req, res) => {
     const { nombre, descripcion } = req.body;
-    const resultado = await pool.query(
-        'INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)',
-        [nombre, descripcion]
-    );
+    await pool.query('INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)', [nombre, descripcion] );
     res.status(201).json({ mensaje: 'Categoría creada correctamente' });
 });
 
@@ -37,10 +34,7 @@ app.get('/categorias/:id', async (req, res) => {
 app.patch('/categorias/:id', async (req, res) => {
     const id = req.params.id;
     const { nombre, descripcion } = req.body;
-    const resultado = await pool.query(
-        'UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?',
-        [nombre, descripcion, id]
-    );
+    await pool.query('UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?', [nombre, descripcion, id] );
     res.status(200).json({ mensaje: 'Categoría actualizada correctamente' });
 });
 
