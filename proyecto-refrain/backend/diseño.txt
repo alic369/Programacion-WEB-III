@@ -1,0 +1,295 @@
+/////////////
+npm init -y
+
+npm install express 
+
+Levanta el servidor:
+node index.js
+
+Para reiniciar automáticamente el servidor
+npm install–D nodemon
+-D dependencia de desarrollo
+Modifique el package.json:
+"start": "nodemon index.js"
+Para ejecutar el script start:
+npm run start
+
+Thunder Client - Propiedades de REQ
+req.body– Cuerpo de la solicitud HTTP.
+req.headers– Encabezados enviados junto con la solicitud HTTP.
+req.params– Un objeto de nombre de parámetro y valor.
+req.query– Obtiene el texto después del ? en la ruta de la solicitud HTTP, como objeto
+
+EXPRESS-VALIDATOR
+Es una herramienta que permite validar las 
+solicitudes de entrada al servidor y determina si 
+la solicitud es válida o no, qué datos coinciden 
+según tus propias validaciones, etc.
+npm install express-validator
+
+
+Primera Forma
+// index.js
+import express from "express";
+import { check, validationResult } from "express-validator";
+const app = express();
+app.use(express.json());
+app.post('/',
+[
+check('nombre', 'El nombre no puede ir vacío').notEmpty(),
+check('precio', 'Valor no válido').isNumeric(),
+check('precio', 'El precio no puede ir vacío').notEmpty(),
+check('precio', 'Precio no válido').custom(resultado =>
+resultado > 0)
+],
+
+Primera Forma
+(req, res) => {
+const resultado = validationResult(req);
+//console.log(resultado.array());
+//console.log(resultado.mapped());
+if (!resultado.isEmpty()) {
+return res.status(400).json({mensaje: resultado.array() })
+}
+res.status(201).json({ // Creación exitosa 
+mensaje: 'Registro Insertado'
+});
+});
+const puerto = 3001
+app.listen(puerto, () =>
+console.log(`Servidor en http://localhost:${puerto}`));
+
+Segunda Forma
+// index.js
+import express from 'express';
+import { check, validationResult } from 'express-validator';
+const app = express();
+app.use(express.json());
+app.post('/', async (req, res) => {
+await check('nombre')
+.notEmpty().withMessage('El nombre no puede ir vacío')
+.run(req);
+await check('precio')
+.isNumeric().withMessage('Valor no válido')
+.notEmpty().withMessage('El precio no puede ir vacío')
+.custom(resultado => resultado > 0).withMessage('Precio no 
+válido')
+.run(req);
+
+Segunda Forma
+const resultado = validationResult(req);
+//console.log(resultado.array());
+//console.log(resultado.mapped());
+if (!resultado.isEmpty()){
+return res.status(400).send({mensaje: resultado.array()});
+}
+res.status(201).send({mensaje:'Registro insertado'});
+});
+const puerto = 3001
+app.listen(puerto, () =>
+console.log(`Servidor en http://localhost:${puerto}`));
+
+API REST
+Una API REST (REpresentational State Transfer) 
+es un conjunto de reglas y convenciones para 
+crear e interactuar con servicios web .
+Ejemplo: Realiza una solicitud HTTP a una URL… 
+usando GET, PUT, POST, PATCH, DELETE, etc… 
+Con contenido (normalmente JSON)… Y espera 
+una respuesta, que indica el estado mediante un 
+código de respuesta o código de estados HTTP.
+
+
+¿Que es un CRUD? 
+CRUD es un acrónimo de Crear (Create), Leer
+(Read), Actualizar (Update) y Eliminar (Delete), 
+que son las cuatro operaciones básicas para 
+gestionar y manipular datos en bases de datos y 
+aplicaciones. 
+Estas operaciones permiten a los usuarios 
+interactuar con la información almacenada, ya 
+sea insertando nuevos registros, consultando los 
+existentes, modificándolos o borrándolos.
+
+MySQL2
+La biblioteca mysql2 es un controlador MySQL
+de alto rendimiento para Node.js, diseñado 
+como una alternativa más rápida y moderna al 
+paquete mysql original.
+
+npm install mysql2
+
+
+
+CRUD EN NODEJS CON ORM
+
+¿Que es un ORM? 
+Un ORM(Object-Relational Mapping o Mapeo 
+Objeto-Relacional) es una técnica de 
+programación que permite interactuar con 
+bases de datos relacionales (como MySQL, 
+PostgreSQL, etc) utilizando el paradigma de la 
+programación orientada a objetos, sin escribir 
+SQL directo. Actúa como un puente, 
+convirtiendo tablas en clases y filas en objetos.
+
+El ORM Sequelize
+Sequelize soporta soporta Typescript y 
+diferentes base de datos.
+
+npm install sequelize
+
+CORS
+CORS (Cross-Origin Resource Sharing) o 
+Intercambio de Recursos de Origen Cruzado es 
+un protocolo de seguridad el cual permite que 
+otros navegadores del frontend que tiene un url
+distinto al url del backend, puedan acceder a los 
+datos del backend, mediante una petición web
+
+npm install cors
+
+Partes de MVC
+M= Model o Modelo
+V= View o Vista
+C = Controller o Controlador
+
+El Modelo Vista Controlador (MVC) es un patrón 
+de arquitectura de software que separa la lógica 
+de negocio, los datos y la interfaz de usuario en 
+tres componentes independientes. Su objetivo 
+principal es organizar el código para facilitar su 
+mantenimiento, escalabilidad y permitir que 
+varios programadores trabajen 
+simultáneamente
+
+Modelo en MVC
+Encargado de todas las interacciones en la base de 
+datos, obtener datos, actualizarlos y eliminar.
+El Modelo se encarga de consultar una base de 
+datos, obtiene la información pero no la muestra, 
+eso es trabajo de la vista.
+El Modelo tampoco se encarga de actualizar la 
+información directamente; es el Controlador quien 
+decide cuándo llamarlo.
+Vista en MVC
+Se encarga de todo lo que se ve en pantalla (HTML)
+Node soporta múltiples Template Engine como son EJS, 
+Pug, Handlebars
+Si utilizas React, Vue, Angular, Svelte, estos serían tu vista.
+El Modelo consulta la base de datos, pero es por medio 
+del Controlador que se decide que Vista hay que llamar y 
+que datos presentar.
+Controlador en MVC
+Es el que comunica modelo y vista; antes de que el 
+Modelo consulte la base de datos el Controlador es 
+el encargado de llamar un Modelo en especifico.
+Una vez consultado el Modelo, el controlador 
+recibe esa información, manda llamar a la vista y le 
+pasa la información.
+El controlador es el que mandar llamar la vista y 
+modelos, que se requieren en cada parte de tu 
+aplicación.
+Router en MVC
+Es el encargado de registrar todas las URL’s o 
+Endpoints que va a soportar nuestra aplicación.
+Ejemplo: Si el Usuario accede a /productos el 
+router ya tiene registrada esa ruta y un 
+controlador con una función que sabe que 
+Modelo debe llamar y que vista mostrar cuando 
+el usuario visita esa URL.
+
+
+
+__________
+
+
+POST /auth/login
+POST /auth/logout (opcional)
+GET  /auth/me
+
+
+Endpoints:
+
+GET    /empleados
+POST   /empleados
+PUT    /empleados/:id
+PATCH  /empleados/:id/estado
+
+Solo dueño.
+
+
+
+__________
+
+CRUD de Categorías
+GET    /categorias
+GET    /categorias/:id
+POST   /categorias
+PUT    /categorias/:id
+DELETE /categorias/:id
+
+CRUD de Productos
+GET    /productos
+GET    /productos/:id
+POST   /productos
+PUT    /productos/:id
+DELETE /productos/:id
+
+Validaciones:
+precio > 0
+stock >= 0
+categoría existente
+CRUD de Empleados
+
+
+Clientes
+GET    /clientes
+POST   /clientes
+PUT    /clientes/:id
+
+Consultas
+GET /ventas
+GET /ventas/:id
+GET /mis-ventas
+GET /estadisticas
+
+
+
+const condiciones = [];
+const params = [];
+
+if (nombre) {
+  condiciones.push("nombre LIKE ?");
+  params.push(`%${nombre}%`);
+}
+
+if (categoria_id) {
+  condiciones.push("categoria_id = ?");
+  params.push(categoria_id);
+}
+
+let sql = "SELECT * FROM producto";
+
+if (condiciones.length > 0) {
+  sql += " WHERE " + condiciones.join(" AND ");
+}
+
+
+export const filtrarProductos = async (filtros) => {
+    let sql = 'SELECT * FROM producto WHERE 1=1';
+    const params = [];
+
+    if (filtros.nombre) {
+        sql += ' AND nombre LIKE ?';
+        params.push(`%${filtros.nombre}%`);
+    }
+
+    if (filtros.categoria_id) {
+        sql += ' AND categoria_id = ?';
+        params.push(filtros.categoria_id);
+    }
+
+    const [resultado] = await pool.query(sql, params);
+    return resultado;
+};
