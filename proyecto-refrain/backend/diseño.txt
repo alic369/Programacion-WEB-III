@@ -1,3 +1,13 @@
+
+{
+
+  "nombre": "Judith", 
+
+  "email": "judiadmin@gmail.com", 
+
+  "pwdu": "CityPop39" 
+
+}
 /////////////
 npm init -y
 

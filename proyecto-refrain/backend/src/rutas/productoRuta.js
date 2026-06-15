@@ -1,5 +1,15 @@
 import express from 'express';
-import {obtProductos, obtProductosDisponibles, obtProductoPorID, obtConFiltros, insertarProducto, activarProducto, desactivarProducto, actualizarProducto, eliminarProducto} from '../src/controladores/productoControlador.js';
+import {
+    obtProductos,
+    obtProductosDisponibles,
+    obtProductoPorID,
+    obtConFiltros,
+    insertarProducto,
+    activarProducto,
+    desactivarProducto,
+    actualizarProducto,
+    eliminarProducto
+} from '../controladores/productoControlador.js';
 
 const rutas = express.Router();
 

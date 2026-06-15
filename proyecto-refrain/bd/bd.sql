@@ -6,11 +6,23 @@ CREATE TABLE usuario (
     id INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    pwdu VARCHAR(255) NOT NULL,
     rol ENUM('dueno','empleado') NOT NULL DEFAULT 'empleado',
     activo BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id)
     );
+
+CREATE TABLE log_acceso (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    ip VARCHAR(50) NOT NULL,
+    navegador VARCHAR(255),
+    evento ENUM('ingreso','salida') NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_log_usuario
+        FOREIGN KEY (usuario_id) 
+        REFERENCES usuario(id)
+);
     
 CREATE TABLE categoria (
     id INT NOT NULL AUTO_INCREMENT,

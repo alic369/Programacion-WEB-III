@@ -21,40 +21,48 @@ export const obtEmpleadosActivo = async () => {
 
 export const obtEmpleado = async (id) => {
     const [resultado] = await pool.query(
-        'SELECT id, nombre, email FROM usuario WHERE id = ? AND rol like "empleado"', [id]);
+        'SELECT id, nombre, email, activo FROM usuario WHERE id = ? AND rol like "empleado"', [id]);
+    return resultado[0];
+};
+
+export const obtDueno = async (id) => {
+    const [resultado] = await pool.query(
+        'SELECT id, nombre, email, activo FROM usuario WHERE id = ? AND rol like "dueno"', [id]);
     return resultado[0];
 };
 
 export const obtUsuarioPorEmail = async (email) => {
     const [resultado] = await pool.query(
-        'SELECT * FROM usuario WHERE email = ?',
-        [email]
-    );
-
+        'SELECT * FROM usuario WHERE email = ?', [email]);
     return resultado[0];
 };
 
 export const registraEmpleado = async (empleado) => {
-    const {nombre, email, password_hash} = empleado;
+    const {nombre, email, pwdu} = empleado;
     const [resultado] = await pool.query(
-        'INSERT INTO usuario(nombre, email, password_hash) VALUES (?,?,?)',
-        [nombre, email, password_hash]);
+        'INSERT INTO usuario(nombre, email, pwdu) VALUES (?,?,?)',
+        [nombre, email, pwdu]);
 
     return await obtEmpleado(resultado.insertId);
 };
 
-export const desactivaEmpleado = async (id) => {    
-    await pool.query(
-      `UPDATE usuario SET activo = FALSE WHERE id = ?`,
-      [id]
-    );
+export const registraDueno = async (dueno) => {
+    const {nombre, email, pwdu} = dueno;
+    const [resultado] = await pool.query(
+        'INSERT INTO usuario(nombre, email, pwdu, rol) VALUES (?,?,?,?)',
+        [nombre, email, pwdu, 'dueno']);
+
+    return await obtDueno(resultado.insertId);
 };
 
-export const activaEmpleado = async (id) => {    
+export const desactivaEmpleado = async (id) => {
     await pool.query(
-      `UPDATE usuario SET activo = TRUE WHERE id = ?`,
-      [id]
-    );
+        'UPDATE usuario SET activo = FALSE WHERE id = ? AND rol = "empleado"',[id]);
+};
+
+export const activaEmpleado = async (id) => {
+    await pool.query(
+        'UPDATE usuario SET activo = TRUE WHERE id = ? AND rol = "empleado"',[id]);
 };
 
 export const modificaEmpleado = async (id, empleado) => {
@@ -76,10 +84,9 @@ export const modificaEmpleado = async (id, empleado) => {
         return null;
     }
 
-    const sql =
-        `UPDATE usuario
-         SET ${campos.join(', ')}
-         WHERE id = ?`;
+    const sql = `UPDATE usuario
+                SET ${campos.join(', ')}
+                WHERE id = ? AND rol = "empleado" `;
 
     params.push(id);
 
