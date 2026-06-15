@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 export default function RutaPrivada({ children, rol }) {
     const user = JSON.parse(localStorage.getItem("user"));
 
-    if (!user) {
+    if (!user?.rol) {
         return <Navigate to="/login" replace />;
     }
 

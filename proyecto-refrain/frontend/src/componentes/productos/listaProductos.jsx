@@ -5,74 +5,139 @@ export default function ListaProductos({
     desactivarProducto,
     editarProducto
 }) {
-
     return (
-        <>
-            <h2>Productos</h2>
-            {
-                productos.map((producto) => (
+        <div style={{
+            background: "#fff",
+            border: "1px solid #E2E8F0",
+            borderRadius: "12px",
+            padding: "16px"
+        }}>
 
-                    <div key={producto.id}>
+            <h2 style={{
+                fontSize: "14px",
+                fontWeight: 800,
+                marginBottom: "12px"
+            }}>
+                Productos
+            </h2>
 
-                        <b>{producto.nombre}</b>
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px"
+            }}>
 
-                        <br />
+                {productos.map((producto) => (
+                    <div
+                        key={producto.id}
+                        style={{
+                            border: "1px solid #F1F5F9",
+                            borderRadius: "10px",
+                            padding: "10px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center"
+                        }}
+                    >
 
-                        Precio: Bs. {producto.precio}
+                        <div>
+                            <div style={{ fontWeight: 700, fontSize: "13px" }}>
+                                {producto.nombre}
+                            </div>
 
-                        <br />
+                            <div style={{ fontSize: "12px", color: "#64748B" }}>
+                                Precio: Bs. {producto.precio}
+                            </div>
 
-                        Stock: {producto.stock}
+                            <div style={{ fontSize: "12px", color: "#64748B" }}>
+                                Stock: {producto.stock}
+                            </div>
 
-                        <br />
+                            <div style={{ fontSize: "12px", color: "#64748B" }}>
+                                Categoría: {producto.categoria}
+                            </div>
 
-                        Categoría: {producto.categoria}
+                            <div style={{
+                                fontSize: "11px",
+                                marginTop: "4px",
+                                fontWeight: 600,
+                                color: producto.activo ? "#16A34A" : "#DC2626"
+                            }}>
+                                {producto.activo ? "Activo" : "Inactivo"}
+                            </div>
+                        </div>
 
-                        <br />
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "6px"
+                        }}>
 
-                        Activo: {producto.activo ? "Sí" : "No"}
-
-                        <br />
-
-                        
-                        <button
-                            onClick={() => eliminarProducto(producto.id)}
-                        >
-                            Eliminar
-                        </button>
-                        
-
-                        <button
-                            onClick={() => editarProducto(producto)}
-                        >
-                            Editar
-                        </button>                        
-
-                        <br />                        
-
-                        {
-                            producto.activo
-                            ?
                             <button
-                                onClick={() => desactivarProducto(producto.id)}
+                                onClick={() => editarProducto(producto)}
+                                style={btnPrimary}
                             >
-                                Desactivar
+                                Editar
                             </button>
-                            
-                            :
 
                             <button
-                                onClick={() => activarProducto(producto.id)}
+                                onClick={() => eliminarProducto(producto.id)}
+                                style={btnDanger}
                             >
-                                Activar
+                                Eliminar
                             </button>
-                        }
 
-                        <hr />
+                            {producto.activo ? (
+                                <button
+                                    onClick={() => desactivarProducto(producto.id)}
+                                    style={btnDanger}
+                                >
+                                    Desactivar
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => activarProducto(producto.id)}
+                                    style={btnSuccess}
+                                >
+                                    Activar
+                                </button>
+                            )}
 
+                        </div>
                     </div>
-                ))
-            }
-        </>
+                ))}
+
+            </div>
+        </div>
     );
 }
+
+const btnPrimary = {
+    background: "#4F46E5",
+    color: "white",
+    border: "none",
+    padding: "6px 10px",
+    borderRadius: "8px",
+    fontSize: "12px",
+    cursor: "pointer"
+};
+
+const btnDanger = {
+    background: "#FEF2F2",
+    border: "1px solid #FCA5A5",
+    color: "#B91C1C",
+    padding: "6px 10px",
+    borderRadius: "8px",
+    fontSize: "12px",
+    cursor: "pointer"
+};
+
+const btnSuccess = {
+    background: "#ECFDF5",
+    border: "1px solid #6EE7B7",
+    color: "#047857",
+    padding: "6px 10px",
+    borderRadius: "8px",
+    fontSize: "12px",
+    cursor: "pointer"
+};

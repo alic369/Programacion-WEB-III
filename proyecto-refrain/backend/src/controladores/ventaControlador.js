@@ -14,7 +14,7 @@ export const obtVentas = async (req, res) => {
         const ventas = await obtVentaTodo();
         res.status(200).json(ventas);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "No se pudo obtener ventas" });
     }
 };
 
@@ -33,7 +33,7 @@ export const obtVentaPorID = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Error al obtener venta" });
     }
 };
 
@@ -96,7 +96,7 @@ export const insertarVenta = async (req, res) => {
         res.status(201).json({...venta, detalles: detallesDB });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Error al insertar venta" });
     }
 };
 
@@ -112,6 +112,6 @@ export const cancelarVenta = async (req, res) => {
         res.status(200).json({ mensaje: 'Venta cancelada correctamente' });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Error al cancelar la venta" });
     }
 };

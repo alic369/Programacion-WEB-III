@@ -20,7 +20,7 @@ export default function Clientes() {
 
     const cargarClientes = async () => {
         try {
-            const { data } = await api.get("/cliente");
+            const { data } = await api.get("/clientes");
             setClientes(data);
         } catch (error) {
             console.error(error.response?.data || error);
@@ -33,7 +33,7 @@ export default function Clientes() {
 
     const registrarCliente = async () => {
         try {
-            await api.post("/cliente", {
+            await api.post("/clientes", {
                 nombre,
                 email,
                 telefono
@@ -58,7 +58,7 @@ export default function Clientes() {
 
     const guardarEdicion = async () => {
         try {
-            await api.patch(`/cliente/${idEditar}`, {
+            await api.patch(`/clientes/${idEditar}`, {
                 nombre,
                 email,
                 telefono
@@ -85,7 +85,7 @@ export default function Clientes() {
             return;
 
         try {
-            await api.delete(`/cliente/${id}`);
+            await api.delete(`/clientes/${id}`);
             cargarClientes();
         } catch (error) {
             console.error(error.response?.data || error);

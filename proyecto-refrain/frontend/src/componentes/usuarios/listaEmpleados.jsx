@@ -5,66 +5,46 @@ export default function ListaEmpleados({
     desactivarEmpleado,
     editarEmpleado
 }) {
-
     return (
-        <>
-            <h2>Empleados</h2>
-            {
-                empleados.map((empleado) => (
+        <div style={{ display: "grid", gap: "10px" }}>
 
-                    <div key={empleado.id}>
+            {empleados.map(e => (
+                <div key={e.id} style={{
+                    border: "1px solid #E2E8F0",
+                    padding: "12px",
+                    borderRadius: "10px",
+                    background: "#fff",
+                    display: "flex",
+                    justifyContent: "space-between"
+                }}>
 
-                        <b>{empleado.nombre}</b>
+                    <div>
+                        <b>{e.nombre}</b>
+                        <div style={{ fontSize: "12px", color: "#64748B" }}>
+                            {e.email}
+                        </div>
+                        <div style={{ fontSize: "12px" }}>
+                            {e.activo ? "Activo" : "Inactivo"}
+                        </div>
+                    </div>
 
-                        <br />
+                    <div style={{ display: "flex", gap: "6px" }}>
+                        <button onClick={() => editarEmpleado(e)}>Editar</button>
 
-                        {empleado.email}
-
-                        <br />
-
-                        Activo: {empleado.activo ? "Si" : "No"}
-
-                        <br />
-
-                        {/*
-                        <button
-                            onClick={() => eliminarEmpleado(empleado.id)}
-                        >
-                            Eliminar
-                        </button>
-                        */}
-
-                        <button
-                            onClick={() => editarEmpleado(empleado)}
-                        >
-                            Editar
-                        </button>                        
-
-                        <br />                        
-
-                        {
-                            empleado.activo
-                            ?
-                            <button
-                                onClick={() => desactivarEmpleado(empleado.id)}
-                            >
+                        {e.activo ? (
+                            <button onClick={() => desactivarEmpleado(e.id)}>
                                 Desactivar
                             </button>
-                            
-                            :
-
-                            <button
-                                onClick={() => activarEmpleado(empleado.id)}
-                            >
+                        ) : (
+                            <button onClick={() => activarEmpleado(e.id)}>
                                 Activar
                             </button>
-                        }
-
-                        <hr />
-
+                        )}
                     </div>
-                ))
-            }
-        </>
+
+                </div>
+            ))}
+
+        </div>
     );
 }

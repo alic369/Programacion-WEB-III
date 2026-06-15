@@ -6,6 +6,8 @@ import Empleado from "./vistas/empleado.jsx";
 import Categorias from "./vistas/categorias.jsx";
 import Productos from "./vistas/productos.jsx";
 import Clientes from "./vistas/clientes.jsx";
+import Estadisticas from "./vistas/estadisticas.jsx";
+import Ventas from "./vistas/ventas.jsx";
 
 import RutaPrivada from "./componentes/rutaPrivada.jsx";
 
@@ -13,7 +15,6 @@ function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-
                 <Route
                     path="/"
                     element={
@@ -31,35 +32,48 @@ function AppRouter() {
                 <Route
                     path="/dueno"
                     element={
-                        <RutaPrivada rol="dueno">
-                            <Dueno />
-                        </RutaPrivada>
-                    }
-                />
+                    <RutaPrivada rol="dueno">
+                        <Dueno />
+                    </RutaPrivada>
+                } />
 
                 <Route
                     path="/empleado"
                     element={
-                        <RutaPrivada rol="empleado">
-                            <Empleado />
-                        </RutaPrivada>
-                    }
-                />
+                    <RutaPrivada rol="empleado">
+                        <Empleado />
+                    </RutaPrivada>
+                } />
+
+                <Route
+                    path="/estadisticas"
+                    element={
+                    <RutaPrivada rol="dueno">
+                        <Estadisticas />
+                    </RutaPrivada>
+                } />
 
                 <Route
                     path="/categorias"
                     element={
-                        <RutaPrivada>
-                            <Categorias />
-                        </RutaPrivada>
-                    }
-                />
+                    <RutaPrivada rol="dueno">
+                        <Categorias />
+                    </RutaPrivada>
+                } />
 
                 <Route
                     path="/productos"
                     element={
+                    <RutaPrivada>
+                        <Productos />
+                    </RutaPrivada>
+                } />
+
+                <Route
+                    path="/ventas"
+                    element={
                         <RutaPrivada>
-                            <Productos />
+                            <Ventas />
                         </RutaPrivada>
                     }
                 />
@@ -67,14 +81,12 @@ function AppRouter() {
                 <Route
                     path="/clientes"
                     element={
-                        <RutaPrivada>
-                            <Clientes />
-                        </RutaPrivada>
-                    }
-                />
+                    <RutaPrivada>
+                        <Clientes />
+                    </RutaPrivada>
+                } />
 
                 <Route path="*" element={<Navigate to="/login" replace />} />
-
             </Routes>
         </BrowserRouter>
     );
