@@ -1,6 +1,14 @@
-import { obtProductoTodo, obtDisponibles, obtProducto, obtFiltros, insertaProducto, desactivaProducto, activaProducto,
-    actualizaProducto, eliminaProducto } from '../modelos/productoModelo.js';
-import { obtCategoriaTodo, obtCategoria } from "../modelos/categoriaModelo.js";
+import {
+    obtProductoTodo,
+    obtDisponibles,
+    obtProducto,
+    obtFiltros,
+    insertaProducto,
+    desactivaProducto,
+    activaProducto,
+    actualizaProducto,
+    eliminaProducto } from '../modelos/productoModelo.js';
+import { obtCategoria } from "../modelos/categoriaModelo.js";
 import { check, validationResult } from 'express-validator';
 
 export const obtProductos = async (req, res) => {

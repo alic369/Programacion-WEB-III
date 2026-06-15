@@ -18,14 +18,12 @@ export default function Categorias() {
     const [idEditar, setIdEditar] = useState(null);
 
     const cargarCategorias = async () => {
-
         try {
             const { data } = await api.get("/categorias");
             setCategorias(data);
         } catch (error) {
-            console.log(error);
+            console.table(error.response.data.mensaje);
         }
-
     };
 
     useEffect(() => {
@@ -33,7 +31,6 @@ export default function Categorias() {
     }, []);
 
     const registrarCategoria = async () => {
-
         try {
             await api.post("/categorias", {
                 nombre,
@@ -46,14 +43,14 @@ export default function Categorias() {
             cargarCategorias();
 
         } catch (error) {
-            console.log(error);
+            console.table(error.response.data.mensaje);
         }
-
     };
 
     const editarCategoria = (categoria) => {
         setEditando(true);
         setIdEditar(categoria.id);
+
         setNombre(categoria.nombre);
         setDescripcion(categoria.descripcion);
     };
@@ -66,11 +63,9 @@ export default function Categorias() {
             });
 
             cancelarEdicion();
-
             cargarCategorias();
-
         } catch (error) {
-            console.log(error);
+            console.table(error.response.data.mensaje);
         }
     };
 
@@ -82,20 +77,6 @@ export default function Categorias() {
         setDescripcion("");
     };
 
-    const eliminarCategoria = async (id) => {
-        if (!window.confirm("¿Eliminar categoría?"))
-            return;
-
-        try {
-            await api.delete(`/categorias/${id}`);
-
-            cargarCategorias();
-        }
-        catch (error) {
-            console.log(error);
-        }
-    };
-
     const activarCategoria = async (id) => {
         await api.patch(`/categorias/${id}/activar`);
         cargarCategorias();
@@ -105,6 +86,20 @@ export default function Categorias() {
         await api.patch(`/categorias/${id}/desactivar`);
         cargarCategorias();
     };
+
+    const eliminarCategoria = async (id) => {
+        if (!window.confirm("¿Eliminar categoría?"))
+            return;
+
+        try {
+            await api.delete(`/categorias/${id}`);
+            cargarCategorias();
+        } catch (error) {
+            console.table(error.response.data.mensaje);
+        }
+    };
+
+    
 
     return (
         <Layout>

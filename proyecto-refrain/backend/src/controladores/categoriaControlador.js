@@ -3,6 +3,7 @@ import {
     obtCategoriasActiva,
     obtCategoria,
     obtFiltros,
+    obtCategoriaPorNombre,
     insertaCategoria,
     activaCategoria,
     desactivaCategoria,
@@ -86,6 +87,12 @@ export const insertarCategoria = async (req, res) => {
         if (!errores.isEmpty())
             return res.status(400).send({
                 mensaje: errores.array()
+            });
+
+        const existente = await obtCategoriaPorNombre(req.body.nombre);
+        if (existente)
+            return res.status(400).json({
+                error: "La categoría ya existe"
             });
 
         const categoriaNueva = await insertaCategoria(req.body);

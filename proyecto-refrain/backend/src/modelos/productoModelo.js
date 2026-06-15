@@ -1,21 +1,42 @@
 import { pool } from '../config/bd.js';
 
 export const obtProductoTodo = async () => {
-    const [resultado] = await pool.query(
-        'SELECT * FROM producto');
+    const [resultado] = await pool.query(`
+        SELECT
+            p.*,
+            c.nombre AS categoria
+        FROM producto p
+        INNER JOIN categoria c
+            ON p.categoria_id = c.id
+    `);
+
     return resultado;
 };
 
 export const obtDisponibles = async () => {
-    const [resultado] = await pool.query(
-      'SELECT * FROM producto WHERE activo = TRUE AND stock > 0'
-    );
+    const [resultado] = await pool.query(`
+        SELECT
+            p.*,
+            c.nombre AS categoria
+        FROM producto p
+        INNER JOIN categoria c
+            ON p.categoria_id = c.id
+        WHERE p.activo = TRUE
+          AND p.stock > 0
+    `);
+
     return resultado;
 };
 
 export const obtProducto = async (id) => {
-    const [resultado] = await pool.query(
-        'SELECT * FROM producto WHERE id = ?', [id]);
+    const [resultado] = await pool.query(`
+        SELECT
+            p.*,
+            c.nombre AS categoria
+        FROM producto p
+        INNER JOIN categoria c
+            ON p.categoria_id = c.id
+        WHERE p.id = ?`, [id]);
     return resultado[0];
 };
 

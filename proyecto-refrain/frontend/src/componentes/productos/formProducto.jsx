@@ -7,6 +7,7 @@ export default function FormProducto({
     setStock,
     categoria_id,
     setCategoria_id,
+    categorias,
 
     registrarProducto,
     editando,
@@ -33,22 +34,38 @@ export default function FormProducto({
             <br /><br />
 
             <input
+                type="number"
                 placeholder="Precio"
                 value={precio}
                 onChange={(e) => setPrecio(e.target.value)}
             />
 
             <input
+                type="number"
                 placeholder="Stock"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
             />
 
-            <input
-                placeholder="Categoria"
+            <select
                 value={categoria_id}
                 onChange={(e) => setCategoria_id(e.target.value)}
-            />
+            >
+                <option value="">
+                    Seleccione categoría
+                </option>
+
+                {
+                    categorias.map((categoria) => (
+                        <option
+                            key={categoria.id}
+                            value={categoria.id}
+                        >
+                            {categoria.nombre}
+                        </option>
+                    ))
+                }
+            </select>
 
             <br /><br />
 

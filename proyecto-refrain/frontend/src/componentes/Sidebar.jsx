@@ -11,6 +11,8 @@ export default function Sidebar({ rol }) {
                         Inicio
                     </button>
 
+                    <br /><br />
+
                     <Link to="/dueno">
                         Empleados
                     </Link>
@@ -21,9 +23,13 @@ export default function Sidebar({ rol }) {
                         Categorías
                     </Link>
 
+                    <br /><br />
+
                     <button>
                         Estadisticas
                     </button>
+
+                    <br /><br />
                     
                 </>
             }
@@ -43,15 +49,15 @@ export default function Sidebar({ rol }) {
 
             <br /><br />
 
-            <button>
+            <Link to="/productos">
                 Productos
-            </button>
+            </Link>
 
             <br /><br />
 
-            <button>
+            <Link to="/clientes">
                 Clientes
-            </button>
+            </Link>
 
             <br /><br />
 

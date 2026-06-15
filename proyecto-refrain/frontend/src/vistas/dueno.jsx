@@ -24,7 +24,7 @@ export default function Dueno() {
             const { data } = await api.get("/usuarios/empleados");
             setEmpleados(data);
         } catch (error) {
-            console.log(error);
+            console.table(error.response.data.mensaje);
         }
 
     };
@@ -49,9 +49,7 @@ export default function Dueno() {
             cargarEmpleados();
 
         } catch (error) {
-
-            alert("Error");
-
+            console.table(error.response.data.mensaje);
         }
 
     };
@@ -64,14 +62,18 @@ export default function Dueno() {
     };
 
     const guardarEdicion = async () => {
-        await api.patch(`/usuarios/${idEditar}`, {
-            nombre,
-            email
-        });
+        try {
+            await api.patch(`/usuarios/${idEditar}`, {
+                nombre,
+                email
+            });
 
-        cancelarEdicion();
+            cancelarEdicion();
 
-        cargarEmpleados();
+            cargarEmpleados();
+        } catch (error) {
+            console.table(error.response.data.mensaje);
+        }
     };
 
     const cancelarEdicion = () => {
@@ -81,15 +83,7 @@ export default function Dueno() {
         setNombre("");
         setEmail("");
         setPwdu("");
-    };
-
-    const eliminarEmpleado = async (id) => {
-        if (!window.confirm("¿Eliminar empleado?"))
-            return;
-
-        await api.delete(`/usuarios/${id}`);
-        cargarEmpleados();
-    };
+    };   
 
     const activarEmpleado = async (id) => {
         await api.patch(`/usuarios/${id}/activar`);
@@ -99,6 +93,19 @@ export default function Dueno() {
     const desactivarEmpleado = async (id) => {
         await api.patch(`/usuarios/${id}/desactivar`);
         cargarEmpleados();
+    };
+
+    const eliminarEmpleado = async (id) => {
+        if (!window.confirm("¿Eliminar empleado?"))
+            return;
+
+        try {
+            await api.delete(`/usuarios/${id}`);
+            cargarEmpleados();
+        } catch (error) {
+            console.table(error.response.data.mensaje);
+        }
+
     };
 
     return (

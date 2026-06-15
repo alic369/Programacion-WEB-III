@@ -22,6 +22,12 @@ export const obtCategoria = async (id) => {
     return resultado[0];
 };
 
+export const obtCategoriaPorNombre = async (nombre) => {
+    const [resultado] = await pool.query(
+        'SELECT * FROM categoria WHERE nombre = ?', [nombre]);
+    return resultado[0];
+};
+
 export const obtFiltros = async (filtros) => {
     let conditions = [];
     let params = [];

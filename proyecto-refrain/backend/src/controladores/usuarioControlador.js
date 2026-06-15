@@ -1,4 +1,15 @@
-import { obtEmpleado, obtEmpleadoTodo, obtEmpleadosActivo, obtTodo, obtUsuarioPorEmail, registraEmpleado, registraDueno, desactivaEmpleado, activaEmpleado, modificaEmpleado, eliminaEmpleado, } from "../modelos/usuarioModelo.js";
+import {
+    obtEmpleado,
+    obtEmpleadoTodo,
+    obtEmpleadosActivo,
+    obtTodo,
+    obtUsuarioPorEmail,
+    registraEmpleado,
+    registraDueno,
+    desactivaEmpleado,
+    activaEmpleado,
+    modificaEmpleado,
+    eliminaEmpleado, } from "../modelos/usuarioModelo.js";
 
 import { check, validationResult } from 'express-validator';
 

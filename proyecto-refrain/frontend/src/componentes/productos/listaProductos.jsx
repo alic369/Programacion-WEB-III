@@ -18,29 +18,29 @@ export default function ListaProductos({
 
                         <br />
 
-                        {producto.stock}
+                        Precio: Bs. {producto.precio}
 
                         <br />
 
-                        {producto.precio}
+                        Stock: {producto.stock}
 
                         <br />
 
-                        {producto.categoria_id}
+                        Categoría: {producto.categoria}
 
                         <br />
 
-                        Activo: {producto.activo ? "Si" : "No"}
+                        Activo: {producto.activo ? "Sí" : "No"}
 
                         <br />
 
-                        {/*
+                        
                         <button
                             onClick={() => eliminarProducto(producto.id)}
                         >
                             Eliminar
                         </button>
-                        */}
+                        
 
                         <button
                             onClick={() => editarProducto(producto)}
