@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import api from "../services/api.js";
+
 import Navbar from "./Navbar.jsx";
 import Sidebar from "./Sidebar.jsx";
 
@@ -21,10 +23,20 @@ export default function Layout({ children }) {
         }
     }, [navigate]);
 
-    const cerrarSesion = () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        navigate("/login", { replace: true });
+    const cerrarSesion = async () => {
+        try {
+            await api.post("/auth/logout", {
+                usuario_id: user.id
+            });
+        } catch (error) {
+            console.error(error);
+        } finally {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            navigate("/login", {
+                replace: true
+            });
+        }
     };
 
     if (!user?.rol) return null;

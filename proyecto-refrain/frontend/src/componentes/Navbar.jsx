@@ -1,8 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import {
+    LogOut,
+    UserRound,
+    Shield,
+    BadgeCheck,
+    Shirt
+} from "lucide-react";
 
 export default function Navbar({ user, cerrarSesion }) {
 
-    const navigate = useNavigate();
+    const rolIcon =
+        user?.rol === "dueno"
+            ? <Shield size={14} />
+            : <BadgeCheck size={14} />;
 
     return (
         <header
@@ -22,34 +31,48 @@ export default function Navbar({ user, cerrarSesion }) {
             }}
         >
 
-            {/* LEFT: TITULO SISTEMA */}
-            <div
-                style={{
-                    fontSize: "14px",
-                    fontWeight: 800,
-                    color: "#0F172A",
-                    letterSpacing: "0.5px"
-                }}
-            >
+            {/* LEFT */}
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                fontSize: "14px",
+                fontWeight: 800,
+                color: "#0F172A",
+                letterSpacing: "0.5px"
+            }}>
+                <Shirt size={18} color="#4F46E5" />
                 REFRÁIN
             </div>
 
-            {/* RIGHT: USER */}
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "14px"
-                }}
-            >
+            {/* RIGHT */}
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "14px"
+            }}>
 
                 {/* USER INFO */}
                 <div style={{ textAlign: "right" }}>
-                    <p style={{ margin: 0, fontSize: "13px", fontWeight: 700 }}>
+                    <p style={{
+                        margin: 0,
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        color: "#0F172A"
+                    }}>
                         {user?.nombre}
                     </p>
 
-                    <p style={{ margin: 0, fontSize: "11px", color: "#64748B" }}>
+                    <p style={{
+                        margin: 0,
+                        fontSize: "11px",
+                        color: "#64748B",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                        gap: "4px"
+                    }}>
+                        {rolIcon}
                         {user?.rol}
                     </p>
                 </div>
@@ -67,18 +90,27 @@ export default function Navbar({ user, cerrarSesion }) {
                         color: "white",
                         fontWeight: 800,
                         fontSize: "13px",
-                        cursor: "default"
+                        border: "1px solid #C7D2FE"
                     }}
                 >
                     {user?.nombre?.charAt(0)?.toUpperCase()}
                 </div>
 
+                {/* DIVIDER */}
+                <div style={{
+                    width: "1px",
+                    height: "24px",
+                    background: "#E2E8F0"
+                }} />
+
                 {/* LOGOUT */}
                 <button
                     onClick={cerrarSesion}
                     style={{
-                        marginLeft: "10px",
-                        padding: "8px 12px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "8px 10px",
                         borderRadius: "8px",
                         border: "1px solid #E2E8F0",
                         background: "#F8FAFC",
@@ -88,6 +120,7 @@ export default function Navbar({ user, cerrarSesion }) {
                         color: "#0F172A"
                     }}
                 >
+                    <LogOut size={14} />
                     Salir
                 </button>
 

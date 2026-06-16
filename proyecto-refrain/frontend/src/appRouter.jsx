@@ -8,6 +8,7 @@ import Productos from "./vistas/productos.jsx";
 import Clientes from "./vistas/clientes.jsx";
 import Estadisticas from "./vistas/estadisticas.jsx";
 import Ventas from "./vistas/ventas.jsx";
+import InicioEmpleado from "./vistas/inicioEmpleado.jsx";
 
 import RutaPrivada from "./componentes/rutaPrivada.jsx";
 
@@ -40,7 +41,7 @@ function AppRouter() {
                 <Route
                     path="/empleado"
                     element={
-                    <RutaPrivada rol="empleado">
+                    <RutaPrivada rol="dueno">
                         <Empleado />
                     </RutaPrivada>
                 } />
@@ -50,6 +51,14 @@ function AppRouter() {
                     element={
                     <RutaPrivada rol="dueno">
                         <Estadisticas />
+                    </RutaPrivada>
+                } />
+
+                <Route
+                    path="/inicio-empleado"
+                    element={
+                    <RutaPrivada rol="empleado">
+                        <InicioEmpleado />
                     </RutaPrivada>
                 } />
 

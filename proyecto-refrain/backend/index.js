@@ -1,4 +1,5 @@
 import express from 'express';
+import path from "path";
 import cors from 'cors';
 
 import productoRuta from './src/rutas/productoRuta.js';
@@ -11,10 +12,14 @@ import authRuta from './src/rutas/auth.js';
 import { pool } from './src/config/bd.js';
 
 const app = express();
+app.set("trust proxy", true);
 
 // middleware
 app.use(cors());
 app.use(express.json());
+
+// subida de archivos
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // auth
 app.use('/auth', authRuta);
@@ -27,6 +32,7 @@ app.use('/usuarios', usuarioRuta);
 app.use('/ventas', ventaRuta);
 
 // test DB
+/*
 app.get('/test-db', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT 1 + 1 AS resultado');
@@ -38,6 +44,7 @@ app.get('/test-db', async (req, res) => {
         });
     }
 });
+*/
 
 // servidor
 const PUERTO = 3001;

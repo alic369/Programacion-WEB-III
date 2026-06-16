@@ -1,24 +1,43 @@
 import { pool } from '../config/bd.js';
 
 export const obtCategoriaTodo = async () => {
-    const [resultado] = await pool.query(
-        'SELECT * FROM categoria');
+    const [resultado] = await pool.query(`
+        SELECT
+            c.*,
+            COUNT(p.id) AS cantidad_productos
+        FROM categoria c
+        LEFT JOIN producto p
+            ON p.categoria_id = c.id
+        GROUP BY c.id
+    `);
     return resultado;
 };
 
 export const obtCategoriasActiva = async () => {
-    const [resultado] = await pool.query(
-        'SELECT * FROM categoria WHERE activo = TRUE'
-    );
+    const [resultado] = await pool.query(`
+        SELECT
+            c.*,
+            COUNT(p.id) AS cantidad_productos
+        FROM categoria c
+        LEFT JOIN producto p
+            ON p.categoria_id = c.id
+        WHERE c.activo = TRUE
+        GROUP BY c.id
+    `);
     return resultado;
 };
 
 export const obtCategoria = async (id) => {
-    const [resultado] = await pool.query(
-        'SELECT * FROM categoria WHERE id = ?',
-        [id]
-    );
-
+    const [resultado] = await pool.query(`
+        SELECT
+            c.*,
+            COUNT(p.id) AS cantidad_productos
+        FROM categoria c
+        LEFT JOIN producto p
+            ON p.categoria_id = c.id
+        WHERE c.id = ?
+        GROUP BY c.id
+    `, [id]);
     return resultado[0];
 };
 
@@ -29,27 +48,35 @@ export const obtCategoriaPorNombre = async (nombre) => {
 };
 
 export const obtFiltros = async (filtros) => {
-    let conditions = [];
+    let where = [];
     let params = [];
 
     if (filtros.nombre) {
-        conditions.push('nombre LIKE ?');
+        where.push("c.nombre LIKE ?");
         params.push(`%${filtros.nombre}%`);
     }
 
     if (filtros.activo !== undefined) {
-        conditions.push('activo = ?');
-        params.push(filtros.activo === 'true');
+        where.push("c.activo = ?");
+        params.push(filtros.activo === "true");
     }
 
-    let sql = 'SELECT * FROM categoria';
+    let sql = `
+        SELECT
+            c.*,
+            COUNT(p.id) AS cantidad_productos
+        FROM categoria c
+        LEFT JOIN producto p
+            ON p.categoria_id = c.id
+    `;
 
-    if (conditions.length > 0) {
-        sql += ' WHERE ' + conditions.join(' AND ');
+    if (where.length > 0) {
+        sql += " WHERE " + where.join(" AND ");
     }
+
+    sql += " GROUP BY c.id";
 
     const [resultado] = await pool.query(sql, params);
-
     return resultado;
 };
 
@@ -57,8 +84,7 @@ export const insertaCategoria = async (categoria) => {
     const { nombre, descripcion, imagen_url } = categoria;
 
     const [resultado] = await pool.query(
-        `INSERT INTO categoria
-        (nombre, descripcion, imagen_url)
+        `INSERT INTO categoria (nombre, descripcion, imagen_url)
         VALUES (?,?,?)`,
         [nombre, descripcion, imagen_url]
     );
@@ -99,29 +125,22 @@ export const actualizaCategoria = async (id, categoria) => {
         campos.push('imagen_url = ?');
         params.push(categoria.imagen_url);
     }
-
-    if (campos.length === 0) {
-        return null;
-    }
-
-    const sql = `
-        UPDATE categoria
-        SET ${campos.join(', ')}
-        WHERE id = ?
-    `;
+    
+    if (campos.length === 0) return null;
 
     params.push(id);
 
-    await pool.query(sql, params);
+    await pool.query(
+        `UPDATE categoria SET ${campos.join(', ')} WHERE id = ?`,
+        params
+    );
 
     return await obtCategoria(id);
 };
 
 export const eliminaCategoria = async (id) => {
     await pool.query(
-        'DELETE FROM categoria WHERE id = ?',
-        [id]
-    );
+        'DELETE FROM categoria WHERE id = ?', [id] );
 
     return id;
 };

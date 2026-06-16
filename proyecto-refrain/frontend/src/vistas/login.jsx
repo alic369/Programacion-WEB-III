@@ -31,7 +31,7 @@ export default function Login() {
 
         if (!user?.rol) return;
 
-        navigate(user.rol === "dueno" ? "/dueno" : "/empleado", {
+        navigate(user.rol === "dueno" ? "/dueno" : "/inicio-empleado", {
             replace: true,
         });
     }, [navigate]);
