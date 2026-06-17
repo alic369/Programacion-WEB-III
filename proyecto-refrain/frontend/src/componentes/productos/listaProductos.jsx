@@ -1,9 +1,8 @@
 export default function ListaProductos({
     productos,
     eliminarProducto,
-    activarProducto,
-    desactivarProducto,
-    editarProducto
+    editarProducto,
+    mostrarEliminados
 }) {
     return (
         <div style={{
@@ -57,14 +56,19 @@ export default function ListaProductos({
                                 Categoría: {producto.categoria}
                             </div>
 
-                            <div style={{
-                                fontSize: "11px",
-                                marginTop: "4px",
-                                fontWeight: 600,
-                                color: producto.activo ? "#16A34A" : "#DC2626"
-                            }}>
-                                {producto.activo ? "Activo" : "Inactivo"}
-                            </div>
+                            {mostrarEliminados && (
+                                <div
+                                    style={{
+                                        fontSize: "11px",
+                                        marginTop: "4px",
+                                        color: "#B91C1C",
+                                        fontWeight: 600
+                                    }}
+                                >
+                                    Eliminado el{" "}
+                                    {new Date(producto.fecha_eliminacion).toLocaleDateString()}
+                                </div>
+                            )}
                         </div>
 
                         <div style={{
@@ -73,34 +77,22 @@ export default function ListaProductos({
                             gap: "6px"
                         }}>
 
-                            <button
-                                onClick={() => editarProducto(producto)}
-                                style={btnPrimary}
-                            >
-                                Editar
-                            </button>
+                            {!mostrarEliminados && (
+                                <>
+                                    <button
+                                        onClick={() => editarProducto(producto)}
+                                        style={btnPrimary}
+                                    >
+                                        Editar
+                                    </button>
 
-                            <button
-                                onClick={() => eliminarProducto(producto.id)}
-                                style={btnDanger}
-                            >
-                                Eliminar
-                            </button>
-
-                            {producto.activo ? (
-                                <button
-                                    onClick={() => desactivarProducto(producto.id)}
-                                    style={btnDanger}
-                                >
-                                    Desactivar
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={() => activarProducto(producto.id)}
-                                    style={btnSuccess}
-                                >
-                                    Activar
-                                </button>
+                                    <button
+                                        onClick={() =>eliminarProducto(producto.id)}
+                                        style={btnDanger}
+                                    >
+                                        Eliminar
+                                    </button>
+                                </>
                             )}
 
                         </div>

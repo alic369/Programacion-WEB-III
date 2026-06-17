@@ -97,7 +97,7 @@ export const desactivarProducto = async (req, res) => {
             return res.status(404).json({ error: 'Producto no encontrado' });
         
         await desactivaProducto(req.params.id);
-        res.status(200).json({ mensaje: 'Producto desactivado existosamente' });
+        res.status(200).json({ mensaje: 'Producto eliminado existosamente' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

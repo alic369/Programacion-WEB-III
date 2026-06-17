@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Eye,
@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import api from "../services/api";
 
+import ReCAPTCHA from "react-google-recaptcha";
+
+
 export default function Login() {
     const navigate = useNavigate();
 
@@ -19,6 +22,9 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const captchaRef = useRef(null);
 
     useEffect(() => {
         let user = null;
@@ -52,6 +58,11 @@ export default function Login() {
             return false;
         }
 
+        if (!captchaToken) {
+            setError("Debe completar el CAPTCHA.");
+            return false;
+        }
+
         return true;
     };
 
@@ -60,40 +71,45 @@ export default function Login() {
         setError("");
 
         if (!validate()) return;
+            try {
+                setLoading(true);
 
-        try {
-            setLoading(true);
+                const { data: res } = await api.post("/auth/login", {
+                    email: email.trim(),
+                    password,
+                    captchaToken
+                });
 
-            const { data: res } = await api.post("/auth/login", {
-                email: email.trim(),
-                password,
-            });
+                const usuario = res?.user ?? res?.usuario ?? res;
 
-            const usuario = res?.user ?? res?.usuario ?? res;
+                if (!usuario?.rol) {
+                    setError("La respuesta del servidor no contiene el rol del usuario.");
+                    return;
+                }
 
-            if (!usuario?.rol) {
-                setError("La respuesta del servidor no contiene el rol del usuario.");
-                return;
+                localStorage.setItem("user", JSON.stringify(usuario));
+
+                if (res?.token) {
+                    localStorage.setItem("token", res.token);
+                }
+
+                navigate(usuario.rol === "dueno" ? "/estadisticas" : "/empleado", {
+                    replace: true,
+                });
+            } catch (err) {
+                captchaRef.current?.reset();
+                setCaptchaToken(null);
+                
+                setError(
+                    err?.response?.data?.message ||
+                    err?.response?.data?.error ||
+                    "Credenciales incorrectas."
+                    
+                );
+            } finally {
+                setLoading(false);
             }
-
-            localStorage.setItem("user", JSON.stringify(usuario));
-
-            if (res?.token) {
-                localStorage.setItem("token", res.token);
-            }
-
-            navigate(usuario.rol === "dueno" ? "/estadisticas" : "/empleado", {
-                replace: true,
-            });
-        } catch (err) {
-            setError(
-                err?.response?.data?.message ||
-                err?.response?.data?.error ||
-                "Credenciales incorrectas."
-            );
-        } finally {
-            setLoading(false);
-        }
+            
     };
 
     const inputBase = {
@@ -513,6 +529,15 @@ export default function Login() {
                                         {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                                     </button>
                                 </div>
+                            </div>
+
+                            <div>
+                                <ReCAPTCHA
+                                    ref={captchaRef}
+                                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                                    onChange={setCaptchaToken}
+                                    onExpired={() => setCaptchaToken(null)}
+                                />
                             </div>
 
                             {error ? (

@@ -12,9 +12,6 @@ export default function Estadisticas() {
     const [ventas, setVentas] = useState([]);
     const [productosBajoStock, setProductosBajoStock] = useState([]);
     const [errores, setErrores] = useState([]);
-
-    // calculados en front
-    const [topProductos, setTopProductos] = useState([]);
     const [ventasPorEmpleado, setVentasPorEmpleado] = useState([]);
     const [clientesFrecuentes, setClientesFrecuentes] = useState([]);
     const [ventasPorCategoria, setVentasPorCategoria] = useState([]);
@@ -32,12 +29,12 @@ export default function Estadisticas() {
             const productos = Array.isArray(p.data) ? p.data : [];
             const clientes = Array.isArray(c.data) ? c.data : [];
             const ventasData = Array.isArray(v.data) ? v.data : [];
+            const productosActivos = productos.filter(p => p.activo);
+            const ingresos = ventasData.reduce((acc, v) => acc + Number(v.total || 0), 0);
 
             setVentas(ventasData);
-
-            const ingresos = ventasData.reduce((acc, v) => acc + Number(v.total || 0), 0);
-            setData({ productos: productos.length, clientes: clientes.length, ventas: ventasData.length, ingresos });
-            setProductosBajoStock(productos.filter(p => p.stock <= 5));
+            setData({ productos: productosActivos.length, clientes: clientes.length, ventas: ventasData.length, ingresos });
+            setProductosBajoStock(productosActivos.filter(p => p.stock > 0 && p.stock <= 5));
 
             // ventas por empleado
             const porEmpleado = {};
@@ -51,7 +48,7 @@ export default function Estadisticas() {
                     .sort((a, b) => b.total - a.total)
             );
 
-            // clientes frecuentes
+            // top clientes por cantidad de compras
             const porCliente = {};
             ventasData.forEach(v => {
                 if (!v.cliente_id) return;
@@ -65,22 +62,14 @@ export default function Estadisticas() {
                     .slice(0, 5)
             );
 
-            // ventas por categoría — desde productos
+            // productos por categoría
             const porCategoria = {};
-            productos.forEach(p => {
+            productosActivos.forEach(p => {
                 const cat = p.categoria || "Sin categoría";
                 porCategoria[cat] = (porCategoria[cat] || 0) + 1;
             });
             setVentasPorCategoria(
                 Object.entries(porCategoria).map(([name, value]) => ({ name, value }))
-            );
-
-            // top productos por stock vendido (inverso: menor stock = más vendido)
-            setTopProductos(
-                [...productos]
-                    .sort((a, b) => a.stock - b.stock)
-                    .slice(0, 5)
-                    .map(p => ({ nombre: p.nombre, stock: p.stock }))
             );
 
         } catch (error) {
@@ -107,13 +96,12 @@ export default function Estadisticas() {
             )}
 
             <div style={grid4}>
-                <Card icon={<Package size={16} />} label="Productos" value={data.productos} />
+                <Card icon={<Package size={16} />} label="Productos activos" value={data.productos} />
                 <Card icon={<Users size={16} />} label="Clientes" value={data.clientes} />
                 <Card icon={<ShoppingCart size={16} />} label="Ventas" value={data.ventas} />
                 <Card icon={<DollarSign size={16} />} label="Ingresos" value={`Bs. ${data.ingresos.toFixed(2)}`} />
             </div>
 
-            {/* GRÁFICO LÍNEA */}
             <div style={panel}>
                 <h3 style={title}>Ventas (últimos registros)</h3>
                 <div style={{ width: "100%", height: 240 }}>
@@ -128,7 +116,6 @@ export default function Estadisticas() {
                 </div>
             </div>
 
-            {/* FILA: ventas por empleado + clientes frecuentes */}
             <div style={grid2}>
                 <div style={panel}>
                     <h3 style={title}>Ventas por empleado</h3>
@@ -148,9 +135,9 @@ export default function Estadisticas() {
                 </div>
 
                 <div style={panel}>
-                    <h3 style={title}>Clientes frecuentes</h3>
+                    <h3 style={title}>Top clientes</h3>
                     {clientesFrecuentes.length === 0
-                        ? <p style={vacio}>Sin clientes registrados en ventas</p>
+                        ? <p style={vacio}>Sin ventas con cliente registrado</p>
                         : clientesFrecuentes.map((c, i) => (
                             <div key={i} style={row}>
                                 <div style={{ fontWeight: 700, fontSize: 13, flex: 1 }}>{c.nombre}</div>
@@ -161,45 +148,26 @@ export default function Estadisticas() {
                 </div>
             </div>
 
-            {/* FILA: top productos + ventas por categoría */}
-            <div style={grid2}>
-                <div style={panel}>
-                    <h3 style={title}>Top productos (menor stock)</h3>
-                    {topProductos.length === 0
-                        ? <p style={vacio}>Sin datos</p>
-                        : topProductos.map((p, i) => (
-                            <div key={i} style={row}>
-                                <div style={{ fontWeight: 700, fontSize: 13, flex: 1 }}>{p.nombre}</div>
-                                <div style={{ fontSize: 12, color: p.stock <= 5 ? "#EF4444" : "#64748B" }}>
-                                    Stock: {p.stock}
-                                </div>
-                            </div>
-                        ))
-                    }
-                </div>
-
-                <div style={panel}>
-                    <h3 style={title}>Productos por categoría</h3>
-                    {ventasPorCategoria.length === 0
-                        ? <p style={vacio}>Sin datos</p>
-                        : <div style={{ width: "100%", height: 200 }}>
-                            <ResponsiveContainer>
-                                <PieChart>
-                                    <Pie data={ventasPorCategoria} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label={({ name }) => name}>
-                                        {ventasPorCategoria.map((_, i) => (
-                                            <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Legend />
-                                    <Tooltip />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-                    }
-                </div>
+            <div style={panel}>
+                <h3 style={title}>Distribución de productos por categoría</h3>
+                {ventasPorCategoria.length === 0
+                    ? <p style={vacio}>Sin datos</p>
+                    : <div style={{ width: "100%", height: 220 }}>
+                        <ResponsiveContainer>
+                            <PieChart>
+                                <Pie data={ventasPorCategoria} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name }) => name}>
+                                    {ventasPorCategoria.map((_, i) => (
+                                        <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                                    ))}
+                                </Pie>
+                                <Legend />
+                                <Tooltip />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                }
             </div>
 
-            {/* STOCK BAJO */}
             <div style={panel}>
                 <h3 style={title}>Alerta de stock bajo</h3>
                 {productosBajoStock.length === 0 && <p style={vacio}>Sin productos en stock bajo</p>}

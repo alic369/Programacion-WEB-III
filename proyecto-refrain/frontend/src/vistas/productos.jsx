@@ -16,6 +16,7 @@ export default function Productos() {
     const [idEditar, setIdEditar] = useState(null);
     const [errores, setErrores] = useState([]);
     const [mensajeExito, setMensajeExito] = useState("");
+    const [mostrarEliminados, setMostrarEliminados] = useState(false);
 
     const limpiarMensajes = () => { setErrores([]); setMensajeExito(""); };
 
@@ -26,7 +27,10 @@ export default function Productos() {
 
     const cargarProductos = async () => {
         try {
-            const { data } = await api.get("/productos");
+            const { data } = await api.get(
+                `/productos/buscar?activo=${!mostrarEliminados}`
+            );
+
             setProductos(Array.isArray(data) ? data : []);
         } catch (error) {
             setErrores(extraerErrores(error));
@@ -45,7 +49,7 @@ export default function Productos() {
     useEffect(() => {
         cargarProductos();
         cargarCategorias();
-    }, []);
+    }, [mostrarEliminados]);
 
     const registrarProducto = async () => {
         limpiarMensajes();
@@ -88,33 +92,11 @@ export default function Productos() {
         setNombre(""); setPrecio(""); setStock(""); setCategoria_id("");
     };
 
-    const activarProducto = async (id) => {
+    const eliminarProducto = async (id) => {
         limpiarMensajes();
-        try {
-            await api.patch(`/productos/${id}/activar`);
-            mostrarExito("Producto activado");
-            cargarProductos();
-        } catch (error) {
-            setErrores(extraerErrores(error));
-        }
-    };
-
-    const desactivarProducto = async (id) => {
-        limpiarMensajes();
+        if (!window.confirm("¿Eliminar producto?")) return;
         try {
             await api.patch(`/productos/${id}/desactivar`);
-            mostrarExito("Producto desactivado");
-            cargarProductos();
-        } catch (error) {
-            setErrores(extraerErrores(error));
-        }
-    };
-
-    const eliminarProducto = async (id) => {
-        if (!window.confirm("¿Eliminar producto?")) return;
-        limpiarMensajes();
-        try {
-            await api.delete(`/productos/${id}`);
             mostrarExito("Producto eliminado");
             cargarProductos();
         } catch (error) {
@@ -142,6 +124,21 @@ export default function Productos() {
                 </div>
             )}
 
+            <div style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginBottom: "12px"
+            }}>
+                <button
+                    onClick={() => setMostrarEliminados(v => !v)}
+                    style={btnFiltro}
+                >
+                    {mostrarEliminados
+                        ? "Ver productos activos"
+                        : "Ver productos eliminados"}
+                </button>
+            </div>
+
             <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: "12px", padding: "14px", marginBottom: "16px" }}>
                 <FormProducto
                     nombre={nombre} setNombre={setNombre}
@@ -160,8 +157,7 @@ export default function Productos() {
                 productos={productos}
                 editarProducto={editarProducto}
                 eliminarProducto={eliminarProducto}
-                activarProducto={activarProducto}
-                desactivarProducto={desactivarProducto}
+                mostrarEliminados={mostrarEliminados}
             />
         </Layout>
     );
@@ -170,3 +166,13 @@ export default function Productos() {
 const estiloHeader = { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", paddingBottom: "10px", borderBottom: "1px solid #E2E8F0" };
 const estiloExito = { background: "#ECFDF5", border: "1px solid #6EE7B7", color: "#047857", borderRadius: "10px", padding: "10px 14px", fontSize: "13px", marginBottom: "12px" };
 const estiloError = { background: "#FEF2F2", border: "1px solid #FCA5A5", color: "#B91C1C", borderRadius: "10px", padding: "10px 14px", fontSize: "13px", marginBottom: "12px", display: "flex", flexDirection: "column", gap: "4px" };
+const btnFiltro = {
+    background: "#F8FAFC",
+    border: "1px solid #CBD5E1",
+    color: "#334155",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "12px",
+    fontWeight: 600
+};

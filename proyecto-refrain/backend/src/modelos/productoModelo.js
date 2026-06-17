@@ -45,27 +45,35 @@ export const obtFiltros = async (filtros) => {
     let params = [];
 
     if (filtros.nombre) {
-        conditions.push('nombre LIKE ?');
+        conditions.push("p.nombre LIKE ?");
         params.push(`%${filtros.nombre}%`);
     }
 
     if (filtros.categoria_id) {
-        conditions.push('categoria_id = ?');
+        conditions.push("p.categoria_id = ?");
         params.push(filtros.categoria_id);
     }
 
     if (filtros.activo !== undefined) {
-        conditions.push('activo = ?');
-        params.push(filtros.activo === 'true');
+        conditions.push("p.activo = ?");
+        params.push(filtros.activo === "true");
     }
 
-    let sql = 'SELECT * FROM producto';
+    let sql = `
+        SELECT
+            p.*,
+            c.nombre AS categoria
+        FROM producto p
+        INNER JOIN categoria c
+            ON p.categoria_id = c.id
+    `;
 
     if (conditions.length > 0) {
-        sql += ' WHERE ' + conditions.join(' AND ');
+        sql += " WHERE " + conditions.join(" AND ");
     }
 
     const [resultado] = await pool.query(sql, params);
+
     return resultado;
 };
 
@@ -78,10 +86,13 @@ export const insertaProducto = async (producto) => {
     return await obtProducto(resultado.insertId);
 };
 
-export const desactivaProducto = async (id) => {    
+export const desactivaProducto = async (id) => {
     await pool.query(
-      `UPDATE producto SET activo = FALSE WHERE id = ?`,
-      [id]
+        `UPDATE producto
+         SET activo = FALSE,
+             fecha_eliminacion = NOW()
+         WHERE id = ?`,
+        [id]
     );
 };
 

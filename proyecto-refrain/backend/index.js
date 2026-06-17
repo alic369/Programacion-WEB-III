@@ -11,6 +11,9 @@ import authRuta from './src/rutas/auth.js';
 
 import { pool } from './src/config/bd.js';
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 app.set("trust proxy", true);
 
@@ -50,5 +53,5 @@ app.get('/test-db', async (req, res) => {
 const PUERTO = 3001;
 
 app.listen(PUERTO, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PUERTO}`);
+    console.log(`Servidor ejecutándose en http://http://192.168.0.11/:${PUERTO}`);
 });
